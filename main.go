@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"os"
 	"fmt"
+	"log"
 	"context"
 	"encoding/json"
 	"time"
@@ -45,7 +46,7 @@ func main() {
 		port = "8080"
 	}
 
-	fmt.Println("Listening on port", port)
+	log.Println("Listening on port", port)
 
 	if err := http.ListenAndServe(":"+port, nil); err != nil {
 		panic(err)
@@ -54,6 +55,7 @@ func main() {
 
 func postEvents(account reddit.Account, events []Event) {
 	for _, event := range(events) {
+		log.Println(event.Url)
 		account.PostLink(
 			"/r/YACUHQ",
 			"[" + event.StartDate.Format("Jan 2, 3:04 PM") + " Eastern] " + event.Title,
@@ -89,6 +91,9 @@ func update(w http.ResponseWriter, r *http.Request) {
 	date := time.Date(now.Year(), now.Month(), now.Day(), 0, 0, 0, 0, now.Location())
 	start := date.AddDate(0, 0, 1)
 	end := date.AddDate(0, 0, 2)
+
+	log.Println("Start time", start.Unix())
+	log.Println("End time", end.Unix())
 
 	url := "https://api.mobilize.us/v1/organizations/2596/events?timeslot_start=gte_" +
 		strconv.Itoa(int(start.Unix())) + 
