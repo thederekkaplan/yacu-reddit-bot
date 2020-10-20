@@ -53,12 +53,12 @@ func main() {
 	}
 }
 
-func postEvents(account reddit.Account, events []Event) {
+func postEvents(account reddit.Account, events []Event, loc *time.Location) {
 	for _, event := range(events) {
 		log.Println(event.Url)
 		account.PostLink(
 			"/r/YACUHQ",
-			"[" + event.StartDate.Format("Jan 2, 3:04 PM") + " Eastern] " + event.Title,
+			"[" + event.StartDate.In(loc).Format("Jan 2, 3:04 PM") + " Eastern] " + event.Title,
 			event.Url,
 		)
 	}
@@ -102,7 +102,7 @@ func update(w http.ResponseWriter, r *http.Request) {
 
 	events := getEvents(url)
 
-	postEvents(bot, events)
+	postEvents(bot, events, loc)
 }
 
 func app() reddit.App {
